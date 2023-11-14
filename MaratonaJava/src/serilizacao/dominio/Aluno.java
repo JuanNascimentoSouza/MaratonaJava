@@ -1,9 +1,17 @@
 package serilizacao.dominio;
 
-public class Aluno {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Aluno implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 4469512149469772990L;
+
     private Long id;
     private String nome;
-    private String password;
+    private transient String password;
+    private transient Turma turma;
+    private static final String NOME_ESCOLA = "Dev Dojo Viradão no Jiraya";
 
 
 
@@ -13,7 +21,21 @@ public class Aluno {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", password='" + password + '\'' +
+                ", nomeEscola ='" + NOME_ESCOLA + '\'' +
+                ", Turma ='" + turma + '\'' +
                 '}';
+    }
+
+    public Turma getTurma() {
+        return turma;
+    }
+
+    public void setTurma(Turma turma) {
+        this.turma = turma;
+    }
+
+    public Aluno(Turma turma) {
+        this.turma = turma;
     }
 
     public Long getId() {
@@ -41,6 +63,7 @@ public class Aluno {
     }
 
     public Aluno(Long id, String nome, String password) {
+        System.out.println("Dentro do contrutor");
         this.id = id;
         this.nome = nome;
         this.password = password;
