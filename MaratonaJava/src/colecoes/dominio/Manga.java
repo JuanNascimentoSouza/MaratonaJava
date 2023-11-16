@@ -9,7 +9,7 @@ public class Manga {
 
     public Manga(Long id, String nome, double preco) {
         Objects.requireNonNull(id,"id não pode ser null");
-        Objects.requireNonNull(nome);
+        Objects.requireNonNull(nome,"nome não pode ser null");
         this.id = id;
         this.nome = nome;
         this.preco = preco;
