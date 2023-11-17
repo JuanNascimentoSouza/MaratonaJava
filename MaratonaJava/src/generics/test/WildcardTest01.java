@@ -1,41 +1,31 @@
 package generics.test;
 
-abstract class Animal {
-    public abstract void consulta();
-}
+import generics.domain.Animal;
+import generics.domain.Cachorro;
+import generics.domain.Gato;
 
-class Cachorro extends Animal {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public void consulta() {
-        System.out.println("Consultando doguinho");
-
-    }
-}
-
-class Gato extends Animal {
-
-    @Override
-    public void consulta() {
-        System.out.println("Consultando gato");
-    }
-}
-
-public class WildcardTest01 {
+public class WildCardTest01 {
     public static void main(String[] args) {
-        Cachorro[] cachorros = {new Cachorro(), new Cachorro()};
-        Gato[] gatos = {new Gato(), new Gato()};
+        List<Cachorro> cachorros = List.of(new Cachorro(), new Cachorro());
+        List<Gato> gatos = List.of(new Gato(), new Gato());
         printConsulta(cachorros);
         printConsulta(gatos);
-        Animal[] animals = {new Gato(), new Cachorro()};
-        printConsulta(animals);
+        List<Animal> animals = new ArrayList<>();
+        printConsultaAnimal(animals);
+
     }
 
-    private static void printConsulta(Animal[] animals) {
+    private static void printConsulta(List<? extends Animal> animals) {
         for (Animal animal : animals) {
             animal.consulta();
         }
+    }
 
-
+    private static void printConsultaAnimal(List<Animal> animals) {
+        animals.add(new Cachorro());
+        animals.add(new Gato());
     }
 }
