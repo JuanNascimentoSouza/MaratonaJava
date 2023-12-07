@@ -24,6 +24,37 @@ public class ProducerRepository {
         }
     }
 
+    public static void saveTransaction(List<Producer> producers) {
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            preparedStatementSaveTransaction(conn, producers);
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException e) {
+            log.error("Error while trying to save producers '{}'", producers, e);
+            e.printStackTrace();
+        }
+    }
+
+    private static void preparedStatementSaveTransaction(Connection conn, List<Producer> producers) throws SQLException {
+        String sql = "INSERT INTO `anime_store`.`producer` (`name`) VALUES ( ? );";
+        boolean shouldRollBack = false;
+        for (Producer p : producers) {
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                log.info("Saving producer '{}'", p.getName());
+                ps.setString(1, p.getName());
+                if (p.getName().equals("While fox")) throw new SQLException(("Can't save white fox"));
+                ps.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                shouldRollBack = true;
+            }
+        }
+        if (shouldRollBack){
+            log.warn("Transaction is going be rollback");
+            conn.rollback();
+        }
+    }
+
     public static void delete(int id) {
         String sql = "DELETE FROM `anime_store`.`producer` WHERE (`id` = '%d');".formatted(id);
         try (Connection conn = ConnectionFactory.getConnection();
@@ -39,7 +70,7 @@ public class ProducerRepository {
     public static void update(Producer producer) {
         String sql = "UPDATE `anime_store`.`producer` SET `name` = '%s' WHERE (`id` = '%d');".formatted(producer.getName(), producer.getId());
         try (Connection conn = ConnectionFactory.getConnection();
-             Statement stmt = preparedStatementUpdate(conn,producer)) {
+             Statement stmt = preparedStatementUpdate(conn, producer)) {
             int rowsAffected = stmt.executeUpdate(sql);
             log.info("Update producer '{}'  , rows affected '{}'", producer.getId(), rowsAffected);
         } catch (SQLException e) {
@@ -50,7 +81,7 @@ public class ProducerRepository {
 
     public static void updatePreparedStatement(Producer producer) {
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = preparedStatementUpdate(conn,producer)) {
+             PreparedStatement ps = preparedStatementUpdate(conn, producer)) {
             int rowsAffected = ps.executeUpdate();
             log.info("Update producer '{}'  , rows affected '{}'", producer.getId(), rowsAffected);
         } catch (SQLException e) {

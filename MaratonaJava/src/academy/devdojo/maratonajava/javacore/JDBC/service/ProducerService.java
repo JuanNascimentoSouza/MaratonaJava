@@ -8,9 +8,11 @@ import java.util.List;
 public class ProducerService {
 
     public static void save(Producer producer) {
-
         ProducerRepository.save(producer);
+    }
 
+    public static void saveTransactions(List<Producer> producers) {
+        ProducerRepository.saveTransaction(producers);
     }
 
     public static void delete(Integer id) {
