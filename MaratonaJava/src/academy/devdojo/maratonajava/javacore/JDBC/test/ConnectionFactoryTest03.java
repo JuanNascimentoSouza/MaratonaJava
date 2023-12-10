@@ -11,7 +11,7 @@ public class ConnectionFactoryTest03 {
         Producer producer1 = Producer.builder().name("Toei Animation").build();
         Producer producer2 = Producer.builder().name("While fox").build();
         Producer producer3 = Producer.builder().name("Studio Ghibli").build();
-        ProducerService.saveTransactions(List.of(producer1,producer2,producer3));
+        ProducerService.saveTransaction(List.of(producer1,producer2,producer3));
 
     }
 }
